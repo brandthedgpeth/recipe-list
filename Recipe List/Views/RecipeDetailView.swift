@@ -8,9 +8,13 @@
 import SwiftUI
 
 struct RecipeDetailView: View {
+
+    @State var selectedServingSize = 2
     
     var recipe:Recipe
+    
     var body: some View {
+        
         ScrollView {
             VStack(alignment:.leading) {
                 // MARK: Recipe Image
@@ -18,6 +22,19 @@ struct RecipeDetailView: View {
                     .resizable()
                     .scaledToFill()
                 
+                // MARK: Serving Size Picker
+                VStack(alignment:.leading) {
+                    Text("Select your serving size")
+                    Picker("Select your serving size", selection: $selectedServingSize) {
+                        Text("2").tag(2)
+                        Text("4").tag(4)
+                        Text("6").tag(6)
+                        Text("8").tag(8)
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                    .frame(width:180)
+                }
+                .padding()
                 // MARK: Ingredients
                 VStack(alignment:.leading) {
                     
@@ -26,7 +43,7 @@ struct RecipeDetailView: View {
                         .padding([.bottom,.top], 3)
                     
                     ForEach(recipe.ingredients) { item in
-                        Text("- " + item.name).padding(.bottom,0.5)
+                        Text("• " + RecipeModel.getPortion(item, recipe.servings, selectedServingSize) + " " + item.name.lowercased()).padding(.bottom,0.5)
                     }
                 }
                 .padding(.horizontal)
@@ -55,6 +72,6 @@ struct RecipeDetailView_Previews: PreviewProvider {
         
         // Create a dummy recipe and pass it into the detail view so we can see a preview of it
         let model = RecipeModel()
-        RecipeDetailView(recipe: model.recipes[0])
+        RecipeDetailView(recipe: model.recipes[1])
     }
 }
